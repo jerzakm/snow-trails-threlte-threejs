@@ -43,7 +43,7 @@
 	<OrbitControls enableZoom={true} target={{ x: 0, y: 0.33, z: 0 }} />
 </T.PerspectiveCamera>
 
-<Environment files="03_env/belfast_sunset_puresky_4k.hdr" isBackground />
+<Environment files="env/belfast_sunset_puresky_4k.hdr" isBackground />
 <Grid sectionColor={'black'} sectionSize={10} />
 
 <World

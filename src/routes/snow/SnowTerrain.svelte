@@ -279,6 +279,8 @@
 		// Render
 	}
 
+	const terrainDebugTile = useTexture('fuji_terrainmap.png');
+
 	useFrame(() => {
 		render();
 	});
@@ -291,6 +293,14 @@
 	position={[0, 3, 0]}
 	castShadow
 	receiveShadow
+/>
+
+<!-- <T.Mesh
+	geometry={terrainGeometry}
+	bind:ref={terrainMesh}
+	position={[0, 3, 0]}
+	castShadow
+	receiveShadow
 >
-	<!-- <T.MeshStandardMaterial /> -->
-</T.Mesh>
+	<T.MeshStandardMaterial map={terrainDebugTile} />
+</T.Mesh> -->

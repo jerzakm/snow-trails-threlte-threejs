@@ -3,16 +3,26 @@
 	import { decodeTerrainFromTile, genMartiniTerrain } from '$lib/martiniTerrain';
 	import { Environment } from '@threlte/extras';
 	import type { BufferGeometry } from 'three';
-	import { AutoColliders, Collider, Debug, World, RigidBody, Attractor } from '@threlte/rapier';
+	import {
+		AutoColliders,
+		Collider,
+		Debug,
+		World,
+		RigidBody,
+		Attractor,
+		useRapier
+	} from '@threlte/rapier';
 	import Postprocessing from './Postprocessing.svelte';
 	import SnowTerrain from './SnowTerrain.svelte';
 	import { DoubleSide } from 'three';
-	import type { RigidBody as RapierRigidBody } from '@dimforge/rapier3d-compat';
+	import type { RigidBody as TRigidBody, Collider as TCollider } from '@dimforge/rapier3d-compat';
+	import HeightfieldDebug from './HeightfieldDebug.svelte';
+	import Viking from './Viking.svelte';
 
 	interface Ball {
 		startingPosition: { x: number; y: number; z: number };
 		size: number;
-		rigidBody?: RapierRigidBody;
+		rigidBody?: TRigidBody;
 	}
 
 	let balls: Ball[] = [
@@ -25,18 +35,6 @@
 
 	let testBall = balls[0];
 
-	let buttons: { [key: string]: boolean } = {};
-
-	window.addEventListener('keydown', (e) => {
-		buttons[e.key] = true;
-		buttons = buttons;
-	});
-
-	window.addEventListener('keyup', (e) => {
-		buttons[e.key] = false;
-		buttons = buttons;
-	});
-
 	let spawnTimer = 0;
 	let elapsedTime = 0;
 
@@ -47,36 +45,12 @@
 			lookAt = balls[0].rigidBody.translation();
 		}
 		elapsedTime = clock.elapsedTime;
-		const impulseVector = {
-			x: 0,
-			y: 0,
-			z: 0
-		};
-
-		const impulseStrength = 2 ** (testBall.size + 1);
-
-		if (buttons.s) {
-			impulseVector.z += impulseStrength;
-		}
-		if (buttons.w) {
-			impulseVector.z -= impulseStrength;
-		}
-
-		if (buttons.d) {
-			impulseVector.x += impulseStrength;
-		}
-		if (buttons.a) {
-			impulseVector.x -= impulseStrength;
-		}
-		if (testBall.rigidBody) {
-			testBall.rigidBody.applyImpulse(impulseVector, true);
-		}
 
 		spawnTimer += clock.getDelta() * 1000;
 
-		if (balls.length < 16 && spawnTimer > 0.2) {
+		if (balls.length < 0 && spawnTimer > 0.2) {
 			balls.push({
-				startingPosition: { x: 20 + Math.random() * 200, y: 50, z: 20 + Math.random() * 200 },
+				startingPosition: { x: 20 + Math.random() * 200, y: 700, z: 20 + Math.random() * 200 },
 				size: 4,
 				rigidBody: undefined
 			});
@@ -100,19 +74,24 @@
 	});
 
 	let terrainCollider: any;
+	let vikingThree: any;
 </script>
 
-<T.PerspectiveCamera
+<!-- <T.PerspectiveCamera
 	let:ref
-	position={[150 + lookAt.x * 0.25, 75, 150 + lookAt.z * 0.25]}
+	position={[150 + lookAt.x * 0.25, 75 + lookAt.y, 150 + lookAt.z * 0.25]}
 	fov={30}
 	far={99999}
 	makeDefault
 >
 	<OrbitControls enableZoom={true} target={lookAt} />
-</T.PerspectiveCamera>
+</T.PerspectiveCamera> -->
 
-<!-- <Environment files="03_env/belfast_sunset_puresky_4k.hdr" isBackground /> -->
+<!-- <T.PerspectiveCamera let:ref position={[150, 100, 150]} fov={30} far={99999} makeDefault>
+	<OrbitControls enableZoom={true} />
+</T.PerspectiveCamera> -->
+
+<Environment files="env/belfast_sunset_puresky_4k.hdr" isBackground />
 
 <World
 	gravity={{
@@ -121,7 +100,8 @@
 		z: 0
 	}}
 >
-	<!-- World borders -->
+	<Viking bind:vikingThree />
+
 	<Collider shape={'cuboid'} args={[128, 300, 5]} position={{ x: 128, y: 150, z: 0 }} />
 
 	<Collider shape={'cuboid'} args={[300, 10, 300]} position={{ x: 0, y: 150, z: 0 }} />
@@ -146,19 +126,9 @@
 		{/each}
 	{/if}
 
-	<!-- <Attractor
-		range={256 * Math.sin(elapsedTime * 0.25)}
-		strength={-500 * Math.sin(elapsedTime * 0.125)}
-		position={{ x: 128, y: 200, z: 128 }}
-	/> -->
-
-	<Attractor range={380} strength={-3000} position={{ x: 600, y: 0, z: 128 }} />
-	<Attractor range={380} strength={-3000} position={{ x: -600 + 256, y: 0, z: 128 }} />
-	<Attractor range={380} strength={-3000} position={{ x: 128, y: 0, z: 600 }} />
-	<Attractor range={380} strength={-3000} position={{ x: 128, y: 0, z: -600 + 256 }} />
-
-	{#if false}
+	{#if true}
 		<Debug depthTest={true} depthWrite={true} side={DoubleSide} />
+		<!-- <HeightfieldDebug nsubdivs={256} heights={terrain} /> -->
 	{/if}
 
 	{#if terrainGeometry}

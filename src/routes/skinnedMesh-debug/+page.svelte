@@ -3,8 +3,6 @@
 	import Scene from './Scene.svelte';
 </script>
 
-<wrapper class="relative h-full">
-	<Canvas frameloop={'always'}>
-		<Scene />
-	</Canvas>
-</wrapper>
+<Canvas frameloop={'always'}>
+	<Scene />
+</Canvas>
