@@ -25,8 +25,8 @@
 	const rotationQuat = new Quaternion();
 	const velocity = new Vector3(1, 0, 1);
 
-	const speed = 10;
-	const rotationSpeed = 0.003;
+	const speed = 11;
+	const rotationSpeed = 0.01;
 
 	useFrame(() => {
 		const rotation = rigidBody.rotation();
@@ -41,8 +41,10 @@
 		}
 
 		if (buttons.d) {
-			// impulseVector.x += impulseStrength;
 			rotation.y -= rotationSpeed;
+			if (Math.abs(rotation.y) >= 1) {
+				rotation.y *= -1;
+			}
 		}
 		if (buttons.a) {
 			rotation.y += rotationSpeed;
@@ -56,8 +58,6 @@
 			velocity.applyQuaternion(rotationQuat);
 
 			rigidBody.setLinvel(velocity, true);
-			// rigidBody.applyImpulse(velocity, true);
 		}
-		// rigidBody.setLinvel({ x: 0, y: 0, z: impulseVector.z }, true);
 	});
 </script>

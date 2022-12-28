@@ -13,10 +13,13 @@
 	} from 'three';
 	import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
 
-	import { Collider, RigidBody } from '@threlte/rapier';
-	import type { RigidBody as TRigidBody } from '@dimforge/rapier3d-compat';
+	import { Collider, CollisionGroups, RigidBody } from '@threlte/rapier';
+	import type { RigidBody as TRigidBody, Collider as TCollider } from '@dimforge/rapier3d-compat';
 	import * as THREE from 'three';
 	import Controller from './Controller.svelte';
+	import type { Ball } from './util';
+
+	export let balls: Ball[];
 
 	const getVertexPosition = function (skin: SkinnedMesh, index: number) {
 		const skinIndices = new THREE.Vector4().fromBufferAttribute(
@@ -87,20 +90,8 @@
 		object.traverse(function (child: any) {
 			if (child.isSkinnedMesh) {
 				skinnedMesh = child;
-
-				// for (let i = 0; i < skinnedMesh.geometry.attributes.position.count; i++) {
-				// 	let target = new Vector3();
-				// 	target = target.fromBufferAttribute(child.geometry.attributes.position, i);
-				// 	targetArray.push(target);
-
-				// 	positionArray.push([Math.random() * 2, Math.random() * 2, Math.random() * 2]);
-				// }
-				// for (let i = 0; i < skinnedMesh.geometry.attributes.position.count; i++) {
-				// 	const r = transformedSkinVertex(skinnedMesh, i).multiply(new Vector3(0.01, 0.01, 0.01));
-				// 	positionArray.push(r.toArray());
-				// }
-
-				// positionArray = positionArray;
+				skinnedMesh.material.transparent = true;
+				skinnedMesh.material.opacity = 0.1;
 			}
 		});
 		viking = object;
@@ -108,8 +99,13 @@
 		vertexPositionArray = vertexPositionArray;
 	});
 
-	const cg = new SphereGeometry(3, 5, 5);
-	const cm = new MeshStandardMaterial({ color: 'white', side: DoubleSide });
+	const cg = new SphereGeometry(10, 5, 5);
+	const cm = new MeshStandardMaterial({
+		color: 'red',
+		side: DoubleSide,
+		transparent: true,
+		opacity: 0
+	});
 
 	debugMesh = new Mesh(cg, cm);
 
@@ -117,59 +113,103 @@
 
 	scene.add(debugMesh);
 
-	// $: {
-	// 	if (skinnedMesh && debugMesh) {
-	// 		console.log(skinnedMesh);
-
-	// 		skinnedMesh.material.transparent = true;
-	// 		skinnedMesh.material.opacity = 0.5;
-	// 		const bone = skinnedMesh.skeleton.getBoneByName('LowerLeg_L');
-	// 		bone?.add(debugMesh);
-	// 		for (const bone of skinnedMesh.skeleton.bones) {
-	// 			const bonePreviewMesh = new Mesh(cg, cm);
-	// 			bone.add(bonePreviewMesh);
-	// 			bonePreviewHelpers.push(bonePreviewMesh);
-	// 			bonePreviewHelperPositions.push(new Vector3(0));
-	// 		}
-	// 	}
-	// }
-
 	let tempCounter = 0;
 
 	let lookAt = { x: 0, y: 0, z: 0 };
 	let rigidBody: TRigidBody;
 
+	let leftFoot: {
+		helper?: Mesh;
+		position?: Vector3;
+		size?: Number;
+		strength?: number;
+		collider?: TCollider;
+		pushed?: boolean;
+	} = {};
+
+	let rightFoot: {
+		helper?: Mesh;
+		position?: Vector3;
+		size?: Number;
+		strength?: number;
+		collider?: TCollider;
+
+		pushed?: boolean;
+	} = {};
+
+	$: {
+		if (skinnedMesh && debugMesh) {
+			skinnedMesh.material.transparent = true;
+			skinnedMesh.material.opacity = 0.9;
+			// const bone = skinnedMesh.skeleton.getBoneByName('LowerLeg_L');
+			// bone?.add(debugMesh);
+			for (const bone of skinnedMesh.skeleton.bones) {
+				if (bone.name == 'Ankle_L') {
+					const bonePreviewMesh = new Mesh(cg, cm);
+					bone.add(bonePreviewMesh);
+					leftFoot.helper = bonePreviewMesh;
+					leftFoot.size = 2;
+					leftFoot.strength = 2;
+					leftFoot.position = new Vector3();
+				}
+				if (bone.name == 'Ankle_R') {
+					const bonePreviewMesh = new Mesh(cg, cm);
+					bone.add(bonePreviewMesh);
+					rightFoot.helper = bonePreviewMesh;
+					rightFoot.size = 2;
+					rightFoot.strength = 2;
+					rightFoot.position = new Vector3();
+				}
+			}
+		}
+	}
+
+	let lastClock = 0;
+	let delta = 0;
+
 	useFrame(({ clock }) => {
+		let currentClock = clock.elapsedTime;
+
+		delta = currentClock - lastClock;
+		delta *= 1;
+
+		lastClock = currentClock;
+
 		tempCounter++;
 		// console.log(debugMesh.getWorldPosition(new Vector3()));
 
-		// if()
+		if (leftFoot.helper && leftFoot.collider) {
+			leftFoot.helper.getWorldPosition(leftFoot.position);
+			leftFoot.collider.setTranslation(leftFoot.position);
+
+			if (!leftFoot.pushed) {
+				balls.push({
+					size: leftFoot.size,
+					startingPosition: leftFoot.position,
+					collider: leftFoot.collider
+				});
+				leftFoot.pushed = true;
+			}
+			leftFoot = leftFoot;
+		}
+
+		if (rightFoot.helper && rightFoot.collider) {
+			rightFoot.helper.getWorldPosition(rightFoot.position);
+			rightFoot.collider.setTranslation(rightFoot.position);
+			rightFoot = rightFoot;
+			if (!rightFoot.pushed) {
+				balls.push({
+					size: rightFoot.size,
+					rightFoot: rightFoot.position,
+					collider: rightFoot.collider
+				});
+				rightFoot.pushed = true;
+			}
+		}
 
 		if (mixer) {
-			for (let i = 0; i < bonePreviewHelpers.length; i++) {
-				// bonePreviewHelpers[i].getWorldPosition(bonePreviewHelperPositions[i]);
-			}
-			// bonePreviewHelperPositions = bonePreviewHelperPositions;
-			mixer.update(0.005);
+			mixer.update(delta);
 			const mod = 36;
-			if (skinnedMesh && tempCounter % 5 == 0) {
-				for (let i = 0; i < skinnedMesh.geometry.attributes.position.count; i++) {
-					if (skinnedMesh.geometry.attributes.position.count % mod == 0) {
-						const r = getVertexPosition(skinnedMesh, i).multiply(new Vector3(0.01, 0.01, 0.01));
-						vertexPositionArray[i / mod] = r.toArray();
-					}
-				}
-				for (let i = 0; i < targetArray.length; i++) {
-					// positionArray[i] = skinnedMesh
-					// 	.boneTransform(i, targetArray[i])
-					// 	.multiply(new Vector3(0.025, 0.025, 0.025))
-					// 	.toArray();
-
-					if (i == 300) {
-						// console.log(targetArray[i]);
-					}
-				}
-			}
 		}
 
 		if (rigidBody) {
@@ -179,11 +219,27 @@
 </script>
 
 {#if viking}
-	<T.PerspectiveCamera let:ref position={[150, 100, 150]} fov={30} far={99999} makeDefault>
+	<Collider
+		shape={'ball'}
+		args={[1]}
+		position={rightFoot.position}
+		bind:collider={rightFoot.collider}
+	/>
+	<Collider
+		shape={'ball'}
+		args={[1]}
+		position={leftFoot.position}
+		bind:collider={leftFoot.collider}
+	/>
+	<!-- <CollisionGroups memberships={[2]} filter={[1]}>
+		
+	</CollisionGroups> -->
+
+	<T.PerspectiveCamera position={[150, 100, 150]} fov={30} far={99999} makeDefault>
 		<OrbitControls enableZoom={true} target={lookAt} />
 	</T.PerspectiveCamera>
 	<RigidBody
-		position={{ x: 100, y: 50, z: 100 }}
+		position={{ x: 100, y: 25, z: 110 }}
 		type="dynamic"
 		enabledRotations={[false, false, false]}
 		bind:rigidBody
@@ -192,6 +248,6 @@
 			<Controller {rigidBody} />
 		{/if}
 		<Three type={viking} bind:ref={vikingThree} scale={10} />
-		<Collider shape={'cuboid'} args={[2, 8, 2]} position={{ y: 8 }} />
+		<Collider shape={'capsule'} args={[2, 8]} position={{ y: 8 }} />
 	</RigidBody>
 {/if}

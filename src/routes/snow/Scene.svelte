@@ -1,29 +1,13 @@
 <script lang="ts">
-	import { OrbitControls, T, useFrame } from '@threlte/core';
 	import { decodeTerrainFromTile, genMartiniTerrain } from '$lib/martiniTerrain';
+	import { T, useFrame } from '@threlte/core';
 	import { Environment } from '@threlte/extras';
+	import { AutoColliders, Collider, RigidBody, World } from '@threlte/rapier';
 	import type { BufferGeometry } from 'three';
-	import {
-		AutoColliders,
-		Collider,
-		Debug,
-		World,
-		RigidBody,
-		Attractor,
-		useRapier
-	} from '@threlte/rapier';
 	import Postprocessing from './Postprocessing.svelte';
 	import SnowTerrain from './SnowTerrain.svelte';
-	import { DoubleSide } from 'three';
-	import type { RigidBody as TRigidBody, Collider as TCollider } from '@dimforge/rapier3d-compat';
-	import HeightfieldDebug from './HeightfieldDebug.svelte';
+	import type { Ball } from './util';
 	import Viking from './Viking.svelte';
-
-	interface Ball {
-		startingPosition: { x: number; y: number; z: number };
-		size: number;
-		rigidBody?: TRigidBody;
-	}
 
 	let balls: Ball[] = [
 		{
@@ -75,6 +59,8 @@
 
 	let terrainCollider: any;
 	let vikingThree: any;
+
+	terrainPhysicsGeometry = terrainGeometry;
 </script>
 
 <!-- <T.PerspectiveCamera
@@ -100,7 +86,7 @@
 		z: 0
 	}}
 >
-	<Viking bind:vikingThree />
+	<Viking bind:vikingThree {balls} />
 
 	<Collider shape={'cuboid'} args={[128, 300, 5]} position={{ x: 128, y: 150, z: 0 }} />
 
@@ -114,6 +100,7 @@
 			args={[terrainPhysicsGeometry.attributes.position.array, terrainPhysicsGeometry.index.array]}
 			bind:collider={terrainCollider}
 		/>
+
 		{#each balls as ball}
 			<RigidBody position={ball.startingPosition} type="dynamic" bind:rigidBody={ball.rigidBody}>
 				<AutoColliders shape={'ball'} restitution={0.9}>
@@ -127,7 +114,7 @@
 	{/if}
 
 	{#if true}
-		<Debug depthTest={true} depthWrite={true} side={DoubleSide} />
+		<!-- <Debug depthTest={true} depthWrite={true} side={DoubleSide} /> -->
 		<!-- <HeightfieldDebug nsubdivs={256} heights={terrain} /> -->
 	{/if}
 
