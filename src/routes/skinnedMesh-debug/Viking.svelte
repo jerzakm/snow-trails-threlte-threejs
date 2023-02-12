@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Instance, InstancedMesh, T, Three, useFrame, useThrelte } from '@threlte/core';
+	import { T, Three, useFrame, useThrelte } from '@threlte/core';
 	import { Mesh } from 'three';
 	import {
 		AnimationMixer,
@@ -106,26 +106,18 @@
 		});
 		viking = object;
 		targetArray = targetArray;
-		vertexPositionArray = vertexPositionArray;
+		// vertexPositionArray = vertexPositionArray;
 	});
 
 	const cg = new SphereGeometry(3, 5, 5);
 	const cm = new MeshStandardMaterial({ color: 'white', side: DoubleSide });
 
-	debugMesh = new Mesh(cg, cm);
-
 	const { scene } = useThrelte();
 
-	scene.add(debugMesh);
-
 	$: {
-		if (skinnedMesh && debugMesh) {
-			console.log(skinnedMesh);
-
+		if (skinnedMesh) {
 			skinnedMesh.material.transparent = true;
 			skinnedMesh.material.opacity = 0.5;
-			const bone = skinnedMesh.skeleton.getBoneByName('LowerLeg_L');
-			bone?.add(debugMesh);
 			for (const bone of skinnedMesh.skeleton.bones) {
 				const bonePreviewMesh = new Mesh(cg, cm);
 				bone.add(bonePreviewMesh);
@@ -139,7 +131,6 @@
 
 	useFrame(({ clock }) => {
 		tempCounter++;
-		// console.log(debugMesh.getWorldPosition(new Vector3()));
 		if (mixer) {
 			for (let i = 0; i < bonePreviewHelpers.length; i++) {
 				// bonePreviewHelpers[i].getWorldPosition(bonePreviewHelperPositions[i]);
@@ -154,37 +145,11 @@
 						vertexPositionArray[i / mod] = r.toArray();
 					}
 				}
-				for (let i = 0; i < targetArray.length; i++) {
-					// positionArray[i] = skinnedMesh
-					// 	.boneTransform(i, targetArray[i])
-					// 	.multiply(new Vector3(0.025, 0.025, 0.025))
-					// 	.toArray();
-
-					if (i == 300) {
-						// console.log(targetArray[i]);
-					}
-				}
 			}
 		}
 	});
 </script>
 
-<!-- <T.Mesh {position} material={cm} geometry={cg} bind:ref={debugMesh} scale={[50, 50, 50]} /> -->
-
 {#if viking}
 	<Three type={viking} {position} bind:ref={vikingThree} scale={1} />
 {/if}
-
-<T.Group rotation={[0, 0, 0]} position={[1, 0, 0]}>
-	<!-- <InstancedMesh material={cm} geometry={cg}>
-		{#each vertexPositionArray as position, i}
-			<Instance
-				position={{
-					x: position[0],
-					y: position[1],
-					z: position[2]
-				}}
-			/>
-		{/each}
-	</InstancedMesh> -->
-</T.Group>

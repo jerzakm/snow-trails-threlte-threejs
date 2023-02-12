@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { decodeTerrainFromTile, genMartiniTerrain } from '$lib/martiniTerrain';
-	import { T, useFrame } from '@threlte/core';
+	import { OrbitControls, T, useFrame } from '@threlte/core';
 	import { Environment } from '@threlte/extras';
 	import { AutoColliders, Collider, RigidBody, World } from '@threlte/rapier';
 	import type { BufferGeometry } from 'three';
@@ -32,15 +32,17 @@
 
 		spawnTimer += clock.getDelta() * 1000;
 
-		if (balls.length < 0 && spawnTimer > 0.2) {
+		if (balls.length < 2 && spawnTimer > 0.01) {
 			balls.push({
-				startingPosition: { x: 20 + Math.random() * 200, y: 700, z: 20 + Math.random() * 200 },
+				startingPosition: { x: 20 + Math.random() * 200, y: 50, z: 20 + Math.random() * 200 },
 				size: 4,
 				rigidBody: undefined
 			});
 			balls = balls;
 
 			spawnTimer = 0;
+
+			console.log(balls.length);
 		}
 	});
 
@@ -73,9 +75,9 @@
 	<OrbitControls enableZoom={true} target={lookAt} />
 </T.PerspectiveCamera> -->
 
-<!-- <T.PerspectiveCamera let:ref position={[150, 100, 150]} fov={30} far={99999} makeDefault>
+<T.PerspectiveCamera let:ref position={[150, 100, 150]} fov={30} far={99999} makeDefault>
 	<OrbitControls enableZoom={true} />
-</T.PerspectiveCamera> -->
+</T.PerspectiveCamera>
 
 <Environment files="env/belfast_sunset_puresky_4k.hdr" isBackground />
 

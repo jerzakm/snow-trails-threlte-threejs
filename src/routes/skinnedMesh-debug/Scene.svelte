@@ -1,85 +1,68 @@
 <script lang="ts">
-	import { OrbitControls, T, useFrame } from '@threlte/core';
+	import { decodeTerrainFromTile, genMartiniTerrain } from '$lib/martiniTerrain';
+	import Stag from '$lib/Stag.svelte';
+	import { OrbitControls, T, Three, useThrelte } from '@threlte/core';
 	import { Environment, Grid } from '@threlte/extras';
-	import { Collider, Debug, World } from '@threlte/rapier';
-	import { DoubleSide } from 'three';
+	import { Mesh, TorusKnotGeometry } from 'three';
+	import { DoubleSide, Group, MeshStandardMaterial, Object3D, SphereGeometry } from 'three';
 	import Viking from './Viking.svelte';
+	import { CSG } from 'three-csg-ts';
 
-	let buttons: { [key: string]: boolean } = {};
-	window.addEventListener('keydown', (e) => {
-		buttons[e.key] = true;
-		buttons = buttons;
-	});
-	window.addEventListener('keyup', (e) => {
-		buttons[e.key] = false;
-		buttons = buttons;
-	});
+	let actions: any;
+	let stag: Group;
+	let stagBones: any;
+	const cg = new SphereGeometry(0.25);
+	const cm = new MeshStandardMaterial({ color: 'white', side: DoubleSide });
 
-	useFrame(({ clock, composer }) => {
-		const impulseVector = {
-			x: 0,
-			y: 0,
-			z: 0
-		};
-		const impulseStrength = 2 ** (2 + 1);
+	const { scene } = useThrelte();
 
-		if (buttons.s) {
-			impulseVector.z += impulseStrength;
-		}
-		if (buttons.w) {
-			impulseVector.z -= impulseStrength;
-		}
+	$: {
+		if (stag && stagBones) {
+			console.log(stagBones);
 
-		if (buttons.d) {
-			impulseVector.x += impulseStrength;
+			for (const bone of Object.values(stagBones)) {
+				const bpg = new Group();
+				const bonePreviewMesh = new Mesh(cg, cm);
+				bonePreviewMesh.position.setY(0.2);
+				bpg.add(bonePreviewMesh);
+				console.log(bone);
+				bone.add(bpg);
+			}
 		}
-		if (buttons.a) {
-			impulseVector.x -= impulseStrength;
+	}
+
+	$: {
+		if ($actions && $actions.Walk) {
+			$actions.Walk.play();
 		}
+	}
+
+	//@ts-ignore
+
+	let terrain, terrainGeometry, terrainMesh, torusMesh;
+
+	let unionMesh;
+
+	const img = new Image(); // Create new img element
+	img.src = 'fuji_terraintile.png';
+	img.addEventListener('load', (e) => {
+		terrain = decodeTerrainFromTile(img);
+		terrainGeometry = genMartiniTerrain(terrain, img.width, 500);
 	});
 </script>
 
-<T.PerspectiveCamera let:ref position={[5, 3, 0]} fov={30} far={99999} makeDefault>
-	<OrbitControls enableZoom={true} target={{ x: 0, y: 0.33, z: 0 }} />
+<T.PerspectiveCamera let:ref position={[12, 12, 5]} fov={30} far={99999} makeDefault>
+	<OrbitControls enableZoom={true} target={{ x: 0, y: 2, z: 0 }} />
 </T.PerspectiveCamera>
 
 <Environment files="env/belfast_sunset_puresky_4k.hdr" isBackground />
 <Grid sectionColor={'black'} sectionSize={10} />
 
-<World
-	gravity={{
-		x: 0,
-		y: -20,
-		z: 0
-	}}
->
-	<!-- World borders -->
-	<Collider shape={'cuboid'} args={[20, 0.5, 20]} position={{ x: 0, y: -1, z: 0 }} />
+<!-- <Horse position={[0, 0, 0]} /> -->
 
-	<Viking />
+<!-- <Viking /> -->
 
-	<!-- {#if terrainPhysicsGeometry}
-		<Collider
-			shape={'trimesh'}
-			args={[terrainPhysicsGeometry.attributes.position.array, terrainPhysicsGeometry.index.array]}
-			bind:collider={terrainCollider}
-		/>
-		{#each balls as ball}
-			<RigidBody position={ball.startingPosition} type="dynamic" bind:rigidBody={ball.rigidBody}>
-				<AutoColliders shape={'ball'} restitution={0.9}>
-					<T.Mesh castShadow receiveShadow>
-						<T.SphereGeometry args={[ball.size, 15, 15]} />
-						<T.MeshStandardMaterial color={'blue'} />
-					</T.Mesh>
-				</AutoColliders>
-			</RigidBody>
-		{/each}
-	{/if} -->
-
-	{#if true}
-		<Debug depthTest={true} depthWrite={true} side={DoubleSide} />
-	{/if}
-</World>
+<Stag bind:actions bind:ref={stag} bind:bones={stagBones} />
 
 <T.DirectionalLight position={[40, 50, 50]} intensity={0.2} castShadow />
 <T.DirectionalLight position={[200, 80, 200]} intensity={0.2} castShadow />

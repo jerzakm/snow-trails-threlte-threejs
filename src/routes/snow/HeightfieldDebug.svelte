@@ -1,6 +1,6 @@
 <script lang="ts">
 	import * as RAPIER from '@dimforge/rapier3d-compat';
-	import { Collider, RigidBody, useRapier } from '@threlte/rapier';
+	import { useRapier } from '@threlte/rapier';
 
 	const { world, debug } = useRapier();
 
