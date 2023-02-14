@@ -13,7 +13,7 @@
 	import { Environment, Grid } from '@threlte/extras';
 	import { Vector2 } from 'three';
 	import { DoubleSide, Mesh, MeshStandardMaterial, Raycaster } from 'three';
-	import CustomShaderMaterial from 'three-custom-shader-material/vanilla';
+	import CustomShaderMaterial from 'three-custom-shader-material/vanilla/dist/three-custom-shader-material-vanilla.cjs.js';
 	import { DEG2RAD } from 'three/src/math/MathUtils';
 
 	const planeMaterial = new CustomShaderMaterial({

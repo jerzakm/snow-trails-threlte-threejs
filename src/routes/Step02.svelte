@@ -15,7 +15,8 @@
 	import { OrbitControls, T, Three, useFrame } from '@threlte/core';
 	import { Environment, Grid } from '@threlte/extras';
 	import { DoubleSide, MeshStandardMaterial } from 'three';
-	import CustomShaderMaterial from 'three-custom-shader-material/vanilla';
+	// import CustomShaderMaterial from 'three-custom-shader-material/vanilla';
+	import CustomShaderMaterial from 'three-custom-shader-material/vanilla/dist/three-custom-shader-material-vanilla.cjs.js';
 	import { DEG2RAD } from 'three/src/math/MathUtils';
 
 	const planeMaterial = new CustomShaderMaterial({

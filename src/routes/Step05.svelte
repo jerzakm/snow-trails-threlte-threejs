@@ -10,7 +10,7 @@
 	import { OrbitControls, T, Three, useFrame, useThrelte } from '@threlte/core';
 	import { Environment } from '@threlte/extras';
 	import { DoubleSide, Mesh, MeshStandardMaterial, Raycaster, Vector2, Vector3 } from 'three';
-	import CustomShaderMaterial from 'three-custom-shader-material/vanilla';
+	import CustomShaderMaterial from 'three-custom-shader-material/vanilla/dist/three-custom-shader-material-vanilla.cjs.js';
 	import { GPUComputationRenderer } from 'three/examples/jsm/misc/GPUComputationRenderer';
 	import { DEG2RAD } from 'three/src/math/MathUtils';
 	import { default as trailmapFS } from './05_trailmapFragmentShader.glsl?raw';
