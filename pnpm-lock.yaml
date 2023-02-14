@@ -25,7 +25,7 @@ specifiers:
   svelte: ^3.55.1
   svelte-check: ^2.10.3
   svelte-sequential-preprocessor: ^0.0.7
-  three: ^0.148.0
+  three: ^0.149.0
   three-csg-ts: ^3.1.11
   three-custom-shader-material: ^5.1.2
   tslib: ^2.5.0
@@ -35,9 +35,9 @@ specifiers:
 dependencies:
   '@mapbox/martini': 0.2.0
   deep-object-diff: 1.1.9
-  postprocessing: 6.29.3_three@0.148.0
-  three-csg-ts: 3.1.11_iffzuvc376b6t7qkifgctlsiiu
-  three-custom-shader-material: 5.1.2_three@0.148.0
+  postprocessing: 6.29.3_three@0.149.0
+  three-csg-ts: 3.1.11_t44xwlmpw6tvkbfozvvf75o4tu
+  three-custom-shader-material: 5.1.2_three@0.149.0
 
 devDependencies:
   '@dimforge/rapier3d-compat': 0.10.0
@@ -46,7 +46,7 @@ devDependencies:
   '@theatre/core': 0.5.1
   '@theatre/studio': 0.5.1_@theatre+core@0.5.1
   '@threlte/core': 5.0.9
-  '@threlte/extras': 4.9.3_three@0.148.0
+  '@threlte/extras': 4.9.3_three@0.149.0
   '@threlte/preprocess': 0.0.2
   '@threlte/rapier': 0.5.0
   '@threlte/theatre': 0.0.2
@@ -61,7 +61,7 @@ devDependencies:
   svelte: 3.55.1
   svelte-check: 2.10.3_svelte@3.55.1
   svelte-sequential-preprocessor: 0.0.7
-  three: 0.148.0
+  three: 0.149.0
   tslib: 2.5.0
   typescript: 4.9.5
   vite: 4.1.1
@@ -433,10 +433,10 @@ packages:
     resolution: {integrity: sha512-3u8SGLD/fzOh0sEf1MDa0FVpp7oLqdEUR8nvGEkWZvGDwKUlhe0XxSmXNzvAYwCSnNLsYYfwiAWy8wBrVkoRlg==}
     dev: true
 
-  /@threlte/extras/4.9.3_three@0.148.0:
+  /@threlte/extras/4.9.3_three@0.149.0:
     resolution: {integrity: sha512-1XVa9a3C+EQE9vMCZopZ2oZGncDlk/Claz+voFCTZvUqJl0xpPWBQTPNM6V61nXu8k5t+JKSGam3TWygBnfxug==}
     dependencies:
-      troika-three-text: 0.46.4_three@0.148.0
+      troika-three-text: 0.46.4_three@0.149.0
     transitivePeerDependencies:
       - three
     dev: true
@@ -1482,13 +1482,13 @@ packages:
       source-map-js: 1.0.2
     dev: true
 
-  /postprocessing/6.29.3_three@0.148.0:
+  /postprocessing/6.29.3_three@0.149.0:
     resolution: {integrity: sha512-gxXC6LKLRwI4eSySdmxqEfQBMKEdQtxg5aYrdvJ/tPHDOS4aZAb/bY4ulQnL5YGKqCC6SmgNmU4dNIc68TTVMw==}
     engines: {node: '>= 0.13.2'}
     peerDependencies:
       three: '>= 0.125.0 < 0.149.0'
     dependencies:
-      three: 0.148.0
+      three: 0.149.0
     dev: false
 
   /prelude-ls/1.2.1:
@@ -1823,17 +1823,17 @@ packages:
     resolution: {integrity: sha512-xv2R435cQzay8SQIR58qu5z9SELZSDZnxOGxoKDkcehGYRYD6sS15SZ0SR/0abP3gZoZqhS1UPMJ01AlXh7jig==}
     dev: false
 
-  /three-csg-ts/3.1.11_iffzuvc376b6t7qkifgctlsiiu:
+  /three-csg-ts/3.1.11_t44xwlmpw6tvkbfozvvf75o4tu:
     resolution: {integrity: sha512-cR0b/u2wQRkQBooL1fZgsWPxjXBKfXlvAld+KItWWh3Qehxm/Jw5WyoCVdOD9PKZJj2RrAKvCFW6sZvYPik95w==}
     peerDependencies:
       '@types/three': '>= 0.125.0'
       three: '>= 0.125.0'
     dependencies:
       '@types/three': 0.146.0
-      three: 0.148.0
+      three: 0.149.0
     dev: false
 
-  /three-custom-shader-material/5.1.2_three@0.148.0:
+  /three-custom-shader-material/5.1.2_three@0.149.0:
     resolution: {integrity: sha512-TH60gCYROIDow90gNpBGTF09yTBcZe1576d942Hr/ic5KkMqsS2+djChZMvlCIsv0ewtrRcti/uPwhW1eOpTlg==}
     peerDependencies:
       '@react-three/fiber': '>=8.0'
@@ -1853,11 +1853,11 @@ packages:
       object-hash: 3.0.0
       textdiff-create: 1.0.9
       textdiff-patch: 1.0.9
-      three: 0.148.0
+      three: 0.149.0
     dev: false
 
-  /three/0.148.0:
-    resolution: {integrity: sha512-8uzVV+qhTPi0bOFs/3te3RW6hb3urL8jYEl6irjCWo/l6sr8MPNMcClFev/MMYeIxr0gmDcoXTy/8LXh/LXkfw==}
+  /three/0.149.0:
+    resolution: {integrity: sha512-tohpUxPDht0qExRLDTM8sjRLc5d9STURNrdnK3w9A+V4pxaTBfKWWT/IqtiLfg23Vfc3Z+ImNfvRw1/0CtxrkQ==}
 
   /through2/0.6.5:
     resolution: {integrity: sha512-RkK/CCESdTKQZHdmKICijdKKsCRVHs5KsLZ6pACAmF/1GPUQhonHSXWNERctxEp7RmvjdNbZTL5z9V7nSCXKcg==}
@@ -1885,24 +1885,24 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /troika-three-text/0.46.4_three@0.148.0:
+  /troika-three-text/0.46.4_three@0.149.0:
     resolution: {integrity: sha512-Qsv0HhUKTZgSmAJs5wvO7YlBoJSP9TGPLmrg+K9pbQq4lseQdcevbno/WI38bwJBZ/qS56hvfqEzY0zUEFzDIw==}
     peerDependencies:
       three: '>=0.103.0'
     dependencies:
       bidi-js: 1.0.2
-      three: 0.148.0
-      troika-three-utils: 0.46.0_three@0.148.0
+      three: 0.149.0
+      troika-three-utils: 0.46.0_three@0.149.0
       troika-worker-utils: 0.46.0
       webgl-sdf-generator: 1.1.1
     dev: true
 
-  /troika-three-utils/0.46.0_three@0.148.0:
+  /troika-three-utils/0.46.0_three@0.149.0:
     resolution: {integrity: sha512-llHyrXAcwzr0bpg80GxsIp73N7FuImm4WCrKDJkAqcAsWmE5pfP9+Qzw+oMWK1P/AdHQ79eOrOl9NjyW4aOw0w==}
     peerDependencies:
       three: '>=0.103.0'
     dependencies:
-      three: 0.148.0
+      three: 0.149.0
     dev: true
 
   /troika-worker-utils/0.46.0:
