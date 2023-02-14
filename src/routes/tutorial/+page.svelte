@@ -45,7 +45,7 @@
   - fix: Sphere trail was inaccurate. It didn't need to be moved by half radius. I meant to move sphere by half of it's diameter.
   - make the trail slowly disappear:`
 	];
-	let currentStep = 0;
+	let currentStep = 4;
 </script>
 
 <div id="ui">

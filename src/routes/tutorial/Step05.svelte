@@ -124,7 +124,7 @@
 	});
 </script>
 
-<T.PerspectiveCamera position={[0, 22, 34]} fov={36} far={200} makeDefault>
+<T.PerspectiveCamera position={[0, 8, 15]} fov={35} far={200} makeDefault>
 	<OrbitControls enableZoom={true} target={{ x: 0, y: 0, z: 0 }} />
 </T.PerspectiveCamera>
 
